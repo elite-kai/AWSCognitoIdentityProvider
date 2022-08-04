@@ -178,7 +178,9 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
         if(expiration && [expiration compare:[NSDate dateWithTimeIntervalSinceNow:5 * 60]] == NSOrderedDescending && accessToken){
             NSString * idTokenKey = [self keyChainKey:keyChainNamespace key:AWSCognitoIdentityUserIdToken];
             AWSCognitoIdentityUserSession * session = [[AWSCognitoIdentityUserSession alloc] initWithIdToken:self.pool.keychain[idTokenKey] accessToken:accessToken refreshToken:refreshToken expirationTime:expiration];
-        
+                NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setObject:session.accessToken.tokenString forKey:@"tokenString"];
+            [defaults synchronize];
             session.expirationTime = expiration;
             return [AWSTask taskWithResult:session];
         }
